@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TupiApp</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ctext y='50' font-size='48'%3E⭐%3C/text%3E%3C/svg%3E">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Sora:wght@700;800;900&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap');
+*{box-sizing:border-box;margin:0;padding:0;}
+html,body{height:100%;font-family:'Plus Jakarta Sans',sans-serif;}
+#app{display:flex;width:100%;height:100vh;min-height:100vh;background:#2C1A0E;overflow:hidden;}
+#sidebar{width:210px;min-width:210px;background:#170E05;display:flex;flex-direction:column;padding:20px 0;height:100vh;}
+#sidebar .logo{display:flex;align-items:center;gap:9px;padding:0 18px 20px;border-bottom:1px solid rgba(255,255,255,0.07);}
+#sidebar .logo-ic{width:34px;height:34px;background:#D97706;border-radius:9px;display:flex;align-items:center;justify-content:center;}
+#sidebar .logo-ic svg{width:18px;height:18px;}
+#sidebar .logo-txt{font-family:'Sora',sans-serif;font-size:16px;font-weight:800;color:#F5DEB3;}
+#sidebar nav{padding:16px 10px;flex:1;display:flex;flex-direction:column;gap:2px;}
+.nb{display:flex;align-items:center;gap:9px;padding:9px 11px;border-radius:9px;cursor:pointer;font-size:13px;font-weight:600;color:#9A7B5A;border:none;background:transparent;width:100%;text-align:left;}
+.nb:hover{background:rgba(255,255,255,0.05);color:#F5DEB3;}
+.nb.act{background:rgba(217,119,6,0.22);color:#FACC15;}
+.nb svg{width:17px;height:17px;flex-shrink:0;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
+.nbdg{margin-left:auto;background:#B91C1C;color:#fff;font-size:10px;font-weight:700;border-radius:99px;padding:1px 6px;}
+.nbdg.gr{background:#166534;}
+#sidebar .lvlbox{margin:0 10px;background:rgba(250,204,21,0.07);border:1px solid rgba(250,204,21,0.15);border-radius:11px;padding:11px 13px;}
+.lvl-num{font-family:'Sora',sans-serif;font-size:18px;font-weight:900;color:#FACC15;}
+.lvl-bar{background:rgba(255,255,255,0.09);border-radius:99px;height:4px;margin:6px 0 4px;overflow:hidden;}
+.lvl-fill{height:100%;width:75%;background:#D97706;border-radius:99px;}
+#main{flex:1;background:#F0E4D0;overflow-y:auto;display:flex;flex-direction:column;height:100vh;}
+.scr{display:none;flex-direction:column;flex:1;}
+.scr.act{display:flex;}
+.topbar{background:#FFF7ED;border-bottom:1px solid rgba(91,55,22,0.1);padding:13px 26px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;}
+.tb-title{font-family:'Sora',sans-serif;font-size:17px;font-weight:800;color:#3B1A06;}
+.pad{padding:22px 26px;flex:1;}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;}
+.g4{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:11px;}
+.card{background:#fff;border-radius:14px;padding:18px;box-shadow:0 2px 14px rgba(59,26,6,0.08);}
+.sec{font-family:'Sora',sans-serif;font-size:13px;font-weight:800;color:#3B1A06;margin-bottom:11px;}
+.feat{background:#fff;border-radius:13px;padding:15px;cursor:pointer;transition:transform 0.18s,box-shadow 0.18s;position:relative;box-shadow:0 2px 10px rgba(59,26,6,0.07);}
+.feat:hover{transform:translateY(-2px);box-shadow:0 7px 22px rgba(59,26,6,0.13);}
+.fic{width:40px;height:40px;border-radius:11px;display:flex;align-items:center;justify-content:center;margin-bottom:9px;}
+.fic svg{width:20px;height:20px;fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;}
+.ftit{font-family:'Sora',sans-serif;font-size:13px;font-weight:800;color:#3B1A06;margin-bottom:2px;}
+.fsub{font-size:11px;color:#9A7B5A;}
+.fbdg{position:absolute;top:11px;right:11px;border-radius:7px;padding:2px 7px;font-size:10px;font-weight:700;}
+.stn{font-family:'Sora',sans-serif;font-size:23px;font-weight:900;color:#B91C1C;}
+.stl{font-size:11px;font-weight:600;color:#9A7B5A;margin-top:2px;}
+.ar{display:flex;align-items:center;gap:11px;padding:9px 0;border-bottom:1px solid #FFF7ED;}
+.ar:last-child{border-bottom:none;}
+.aic{width:34px;height:34px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;}
+.xch{background:#D1FAE5;border-radius:7px;padding:3px 8px;font-size:11px;font-weight:700;color:#065F46;margin-left:auto;flex-shrink:0;}
+.streak{display:flex;align-items:center;gap:5px;background:#3B1A06;border-radius:99px;padding:5px 13px;}
+.streak span{font-size:12px;font-weight:800;color:#FACC15;}
+.pb{background:#E0D0BC;border-radius:99px;height:5px;overflow:hidden;margin-bottom:16px;}
+.pbf{height:100%;border-radius:99px;background:#B91C1C;transition:width 0.5s;}
+.cpills{display:flex;gap:7px;margin-bottom:13px;flex-wrap:wrap;}
+.cp{border-radius:99px;padding:5px 13px;font-size:12px;font-weight:700;cursor:pointer;border:none;}
+.cp.on{background:#3B1A06;color:#FACC15;}
+.cp.off{background:#fff;color:#9A7B5A;box-shadow:0 1px 5px rgba(59,26,6,0.07);}
+.flip-wrap{perspective:1200px;cursor:pointer;height:250px;margin-bottom:13px;}
+.flip-inner{position:relative;width:100%;height:100%;transition:transform 0.55s cubic-bezier(0.4,0,0.2,1);transform-style:preserve-3d;}
+.flip-wrap.flipped .flip-inner{transform:rotateY(180deg);}
+.ff{position:absolute;inset:0;backface-visibility:hidden;border-radius:14px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px;}
+.ffront{background:#fff;box-shadow:0 3px 16px rgba(59,26,6,0.1);}
+.fback{background:#3B1A06;transform:rotateY(180deg);}
+.fw{font-family:'Sora',sans-serif;font-size:42px;font-weight:900;color:#B91C1C;letter-spacing:-0.02em;}
+.fcnav{display:flex;align-items:center;justify-content:space-between;margin-bottom:11px;}
+.fcb{width:40px;height:40px;background:#fff;border-radius:50%;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 9px rgba(59,26,6,0.1);}
+.fcb svg{width:16px;height:16px;stroke:#5B3716;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;}
+.fcacts{display:flex;gap:9px;}
+.fcw{flex:1;background:#fff;border:2px solid #FEE2E2;border-radius:11px;padding:11px;display:flex;align-items:center;justify-content:center;gap:5px;cursor:pointer;font-size:13px;font-weight:700;color:#B91C1C;}
+.fcr{flex:1;background:#166534;border:none;border-radius:11px;padding:11px;display:flex;align-items:center;justify-content:center;gap:5px;cursor:pointer;font-size:13px;font-weight:700;color:#fff;}
+.fcw svg,.fcr svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;}
+.fcw:hover{background:#FEE2E2;}
+.fcr:hover{background:#15803D;}
+.qhdr{background:#3B1A06;border-radius:14px;padding:18px 22px;margin-bottom:16px;display:flex;align-items:flex-start;justify-content:space-between;gap:12px;}
+.qqn{font-size:10px;color:rgba(255,255,255,0.45);font-weight:700;letter-spacing:0.1em;}
+.qq{font-family:'Sora',sans-serif;font-size:19px;font-weight:800;color:#fff;margin:8px 0 4px;line-height:1.3;}
+.qh{font-size:12px;color:rgba(255,255,255,0.45);}
+.qring{width:50px;height:50px;min-width:50px;background:rgba(255,255,255,0.07);border-radius:50%;display:flex;align-items:center;justify-content:center;border:3px solid #FACC15;}
+.qrv{font-family:'Sora',sans-serif;font-size:17px;font-weight:900;color:#FACC15;}
+.qdots{display:flex;gap:4px;margin-bottom:9px;}
+.qdot{flex:1;height:4px;border-radius:99px;background:rgba(59,26,6,0.15);}
+.qdot.done{background:#FACC15;}
+.qdot.cur{background:#D97706;}
+.qopts{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:16px;}
+.qo{background:#fff;border:2px solid transparent;border-radius:12px;padding:13px 16px;cursor:pointer;font-size:13px;font-weight:700;color:#3B1A06;display:flex;align-items:center;gap:9px;transition:border-color 0.15s,background 0.15s;box-shadow:0 2px 9px rgba(59,26,6,0.07);}
+.qo:hover{border-color:#D97706;background:#FFFBEB;}
+.qo.cor{background:#D1FAE5;border-color:#059669;color:#065F46;}
+.qo.wr{background:#FEE2E2;border-color:#B91C1C;color:#7F1D1D;}
+.qo.dis{pointer-events:none;}
+.qo.dis:not(.cor):not(.wr){opacity:0.4;}
+.olet{width:28px;height:28px;min-width:28px;border-radius:7px;background:#F5EBE0;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;color:#5B3716;}
+.qo.cor .olet{background:#059669;color:#fff;}
+.qo.wr .olet{background:#B91C1C;color:#fff;}
+.qfb{border-radius:12px;padding:13px 16px;margin-bottom:13px;display:none;gap:9px;align-items:flex-start;}
+.qfb.vis{display:flex;}
+.qfb.ok{background:#D1FAE5;}
+.qfb.bad{background:#FEE2E2;}
+.qfbtit{font-family:'Sora',sans-serif;font-size:13px;font-weight:800;color:#3B1A06;}
+.qfbdsc{font-size:12px;color:#5B3716;margin-top:2px;line-height:1.5;}
+.qnxt{width:100%;background:#3B1A06;border:none;border-radius:12px;padding:13px;font-family:'Sora',sans-serif;font-size:13px;font-weight:800;color:#FACC15;cursor:pointer;display:none;}
+.qnxt:hover{background:#5B2E10;}
+.qnxt.vis{display:block;}
+.rkhdr{background:#3B1A06;border-radius:14px;padding:20px 22px;margin-bottom:16px;display:flex;align-items:center;gap:20px;}
+.rkxp{font-family:'Sora',sans-serif;font-size:40px;font-weight:900;color:#FACC15;line-height:1;}
+.rk-card{background:#fff;border-radius:13px;overflow:hidden;box-shadow:0 2px 12px rgba(59,26,6,0.08);}
+.rkrow{display:flex;align-items:center;gap:11px;padding:11px 14px;border-bottom:1px solid #FFF7ED;cursor:pointer;}
+.rkrow:last-child{border-bottom:none;}
+.rkrow:hover,.rkrow.me{background:#FFFBEB;}
+.rknm{width:28px;height:28px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:900;flex-shrink:0;}
+.rkav{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;border:2px solid transparent;}
+.rknme{font-family:'Sora',sans-serif;font-size:13px;font-weight:800;color:#3B1A06;}
+.rkbb{background:#F5EBE0;border-radius:99px;height:3px;width:100px;overflow:hidden;margin-top:3px;}
+.rkbf{height:100%;border-radius:99px;background:#D97706;}
+.achbox{background:#FFFBEB;border:2px solid #FDE68A;border-radius:13px;padding:16px;text-align:center;margin-bottom:13px;}
+.achb{width:56px;height:56px;background:#D97706;border-radius:50%;margin:0 auto 9px;display:flex;align-items:center;justify-content:center;}
+.achb svg{width:26px;height:26px;stroke:#fff;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
+.acht{font-family:'Sora',sans-serif;font-size:19px;font-weight:900;color:#3B1A06;}
+.achs{font-size:12px;color:#9A7B5A;margin-top:3px;}
+.tst{position:fixed;bottom:20px;left:50%;transform:translateX(-50%) translateY(4px);background:#3B1A06;color:#FACC15;padding:7px 18px;border-radius:99px;font-size:12px;font-weight:700;opacity:0;transition:all 0.25s;pointer-events:none;z-index:9999;white-space:nowrap;}
+.tst.vis{opacity:1;transform:translateX(-50%) translateY(0);}
+</style>
+</head>
+<body>
+
+<div id="app">
+  <!-- SIDEBAR -->
+  <div id="sidebar">
+    <div class="logo">
+      <div class="logo-ic">
+        <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg>
+      </div>
+      <span class="logo-txt">TupiApp</span>
+    </div>
+    <nav>
+      <button class="nb act" id="nb-home" data-screen="home">
+        <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9,22 9,12 15,12 15,22"/></svg>Inicio
+      </button>
+      <button class="nb" id="nb-flash" data-screen="flash">
+        <svg viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="3"/><path d="M8 10h8M8 14h5"/></svg>Flashcards
+        <span class="nbdg">48</span>
+      </button>
+      <button class="nb" id="nb-quiz" data-screen="quiz">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17" stroke-width="3"/></svg>Quiz
+        <span class="nbdg gr">Novo</span>
+      </button>
+      <button class="nb" id="nb-rank" data-screen="rank">
+        <svg viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>Progresso
+      </button>
+      <button class="nb" data-toast="Jogos em breve!">
+        <svg viewBox="0 0 24 24"><rect x="2" y="6" width="20" height="12" rx="4"/><path d="M12 12h.01M8 10v4M6 12h4M16 10v4"/></svg>Jogos
+      </button>
+      <button class="nb" data-toast="Videos em breve!">
+        <svg viewBox="0 0 24 24"><polygon points="23,7 16,12 23,17"/><rect x="1" y="5" width="15" height="14" rx="3"/></svg>Videos
+      </button>
+    </nav>
+    <div class="lvlbox">
+      <div style="font-size:10px;font-weight:700;color:rgba(255,255,255,0.3);letter-spacing:.1em;margin-bottom:4px;">NIVEL ATUAL</div>
+      <div class="lvl-num">Nivel 10</div>
+      <div class="lvl-bar"><div class="lvl-fill"></div></div>
+      <div style="font-size:11px;color:rgba(255,255,255,0.28);">1500 / 1875 XP</div>
+    </div>
+  </div>
+
+  <div id="main">
+
+    <!-- HOME -->
+    <div class="scr act" id="scr-home">
+      <div class="topbar">
+        <div class="tb-title">Ola, Anahi!</div>
+        <div style="display:flex;align-items:center;gap:9px;">
+          <div class="streak"><span>Seq. 7 dias</span></div>
+          <button data-toast="Notificacoes em breve!" style="width:34px;height:34px;background:#F5EBE0;border-radius:9px;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;position:relative;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#5B3716" stroke-width="2" stroke-linecap="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+            <div style="position:absolute;top:5px;right:5px;width:6px;height:6px;background:#B91C1C;border-radius:50%;"></div>
+          </button>
+        </div>
+      </div>
+      <div class="pad" style="overflow-y:auto;">
+
+        <!-- Banner Palavra do Dia -->
+        <div style="border-radius:16px;overflow:hidden;margin-bottom:20px;position:relative;height:170px;">
+          <svg width="100%" height="170" viewBox="0 0 640 170" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+            <rect width="640" height="170" fill="#1A3320"/>
+            <circle cx="320" cy="50" r="90" fill="#D97706" opacity="0.07"/>
+            <rect x="0" y="125" width="640" height="45" fill="#0F2518" opacity="0.7"/>
+            <polygon points="40,125 65,72 90,125" fill="#2D6A4F"/>
+            <polygon points="60,125 90,55 120,125" fill="#1B4332"/>
+            <polygon points="85,125 120,45 155,125" fill="#40916C"/>
+            <polygon points="110,125 150,65 190,125" fill="#2D6A4F"/>
+            <rect x="62" y="103" width="7" height="22" fill="#132A1A"/>
+            <rect x="107" y="98" width="8" height="27" fill="#132A1A"/>
+            <rect x="147" y="101" width="7" height="24" fill="#132A1A"/>
+            <polygon points="450,125 475,72 500,125" fill="#2D6A4F"/>
+            <polygon points="470,125 505,55 540,125" fill="#1B4332"/>
+            <polygon points="510,125 550,62 590,125" fill="#40916C"/>
+            <polygon points="540,125 575,75 610,125" fill="#2D6A4F"/>
+            <rect x="477" y="103" width="7" height="22" fill="#132A1A"/>
+            <rect x="512" y="96" width="8" height="29" fill="#132A1A"/>
+            <rect x="553" y="100" width="7" height="25" fill="#132A1A"/>
+            <text x="320" y="46" font-family="Sora,sans-serif" font-size="11" font-weight="700" fill="rgba(250,204,21,0.65)" text-anchor="middle" letter-spacing="3">PALAVRA DO DIA</text>
+            <text x="320" y="92" font-family="Sora,sans-serif" font-size="44" font-weight="900" fill="#FACC15" text-anchor="middle" letter-spacing="-1">KOWA</text>
+            <text x="320" y="115" font-family="Sora,sans-serif" font-size="13" fill="rgba(255,255,255,0.55)" text-anchor="middle">casa, moradia  •  Tupi-Guarani</text>
+          </svg>
+          <button onclick="showToast('Reproduzindo KOWA...')" style="position:absolute;right:18px;top:50%;transform:translateY(-50%);width:44px;height:44px;background:#D97706;border-radius:50%;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round"><polygon points="5,3 19,12 5,21" fill="white"/></svg>
+          </button>
+          <button onclick="showToast('Palavra salva!')" style="position:absolute;right:70px;top:50%;transform:translateY(-50%);background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.25);border-radius:99px;padding:6px 13px;font-size:11px;font-weight:700;color:rgba(255,255,255,0.8);cursor:pointer;">Salvar</button>
+        </div>
+
+        <!-- Explorar -->
+        <div class="sec">Explorar</div>
+        <div class="g4" style="margin-bottom:20px;">
+          <div class="feat" data-screen="flash">
+            <div class="fic" style="background:#FEF3C7;"><svg style="stroke:#D97706;" viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="3"/><path d="M8 10h8M8 14h5"/></svg></div>
+            <div class="ftit">Flashcards</div><div class="fsub">Aprenda palavras</div>
+            <div class="fbdg" style="background:#FEF3C7;color:#B45309;">48</div>
+          </div>
+          <div class="feat" data-screen="quiz">
+            <div class="fic" style="background:#D1FAE5;"><svg style="stroke:#059669;" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17" stroke-width="3"/></svg></div>
+            <div class="ftit">Quiz</div><div class="fsub">Teste conhecimentos</div>
+            <div class="fbdg" style="background:#D1FAE5;color:#065F46;">Novo</div>
+          </div>
+          <div class="feat" data-toast="Jogos em breve!">
+            <div class="fic" style="background:#EDE9FE;"><svg style="stroke:#7C3AED;" viewBox="0 0 24 24"><rect x="2" y="6" width="20" height="12" rx="4"/><path d="M12 12h.01M8 10v4M6 12h4M16 10v4"/></svg></div>
+            <div class="ftit">Jogos</div><div class="fsub">Diversao</div>
+            <div class="fbdg" style="background:#EDE9FE;color:#5B21B6;">3</div>
+          </div>
+          <div class="feat" data-toast="Videos em breve!">
+            <div class="fic" style="background:#FEE2E2;"><svg style="stroke:#B91C1C;" viewBox="0 0 24 24"><polygon points="23,7 16,12 23,17"/><rect x="1" y="5" width="15" height="14" rx="3"/></svg></div>
+            <div class="ftit">Videos</div><div class="fsub">Cultura em video</div>
+            <div class="fbdg" style="background:#FEE2E2;color:#991B1B;">12</div>
+          </div>
+        </div>
+
+        <!-- 2 colunas: Estatisticas + Quiz do Dia -->
+        <div class="g2" style="margin-bottom:20px;">
+          <div>
+            <div class="sec">Suas Estatisticas</div>
+            <div class="card" style="height:calc(100% - 28px);display:flex;flex-direction:column;justify-content:space-between;gap:12px;">
+              <div style="background:#FFF7ED;border-radius:11px;padding:13px;display:flex;align-items:center;gap:13px;">
+                <div style="width:42px;height:42px;background:#FEE2E2;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:20px;">📖</div>
+                <div><div class="stn">142</div><div class="stl">Palavras aprendidas</div></div>
+              </div>
+              <div style="background:#FFF7ED;border-radius:11px;padding:13px;display:flex;align-items:center;gap:13px;">
+                <div style="width:42px;height:42px;background:#FEF3C7;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:20px;">🎓</div>
+                <div><div class="stn" style="color:#D97706;">21</div><div class="stl">Licoes completas</div></div>
+              </div>
+              <div style="background:#FFF7ED;border-radius:11px;padding:13px;display:flex;align-items:center;gap:13px;">
+                <div style="width:42px;height:42px;background:#D1FAE5;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:20px;">🔥</div>
+                <div><div class="stn" style="color:#166534;">7</div><div class="stl">Dias de sequencia</div></div>
+              </div>
+            </div>
+          </div>
+          <div>
+            <div class="sec">Quiz do Dia</div>
+            <div data-screen="quiz" style="background:#1A4731;border-radius:14px;padding:18px;cursor:pointer;transition:opacity 0.18s;height:calc(100% - 28px);">
+              <div style="font-size:30px;margin-bottom:8px;">🧠</div>
+              <div style="font-family:'Sora',sans-serif;font-size:15px;font-weight:800;color:#DCFCE7;">Quiz do Dia</div>
+              <div style="font-size:12px;color:rgba(220,252,233,0.6);margin-top:3px;margin-bottom:14px;">8 perguntas  •  +200 XP</div>
+              <div style="display:inline-flex;align-items:center;gap:5px;background:rgba(74,222,128,0.18);border-radius:99px;padding:5px 13px;">
+                <span style="font-size:12px;font-weight:700;color:#4ADE80;">Comecar agora</span>
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#4ADE80" stroke-width="2.5" stroke-linecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Imagem Cultura Indigena -->
+        <div style="margin-bottom:20px;">
+          <div class="sec">Cultura Indigena</div>
+          <div style="border-radius:16px;overflow:hidden;height:180px;position:relative;">
+            <svg width="100%" height="180" viewBox="0 0 700 180" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stop-color="#0C2340"/>
+                  <stop offset="100%" stop-color="#1A4731"/>
+                </linearGradient>
+              </defs>
+              <rect width="700" height="180" fill="url(#sky)"/>
+              <circle cx="620" cy="35" r="28" fill="#FACC15" opacity="0.9"/>
+              <circle cx="620" cy="35" r="22" fill="#FEF3C7"/>
+              <ellipse cx="350" cy="200" rx="420" ry="90" fill="#0F2518" opacity="0.5"/>
+              <polygon points="0,180 40,90 80,180" fill="#1B4332"/>
+              <polygon points="30,180 80,70 130,180" fill="#2D6A4F"/>
+              <polygon points="70,180 130,50 190,180" fill="#40916C"/>
+              <polygon points="120,180 185,65 250,180" fill="#2D6A4F"/>
+              <polygon points="170,180 240,80 310,180" fill="#1B4332"/>
+              <polygon points="380,180 440,72 500,180" fill="#1B4332"/>
+              <polygon points="420,180 490,55 560,180" fill="#2D6A4F"/>
+              <polygon points="470,180 545,68 620,180" fill="#40916C"/>
+              <polygon points="540,180 610,82 680,180" fill="#1B4332"/>
+              <polygon points="600,180 660,60 720,180" fill="#2D6A4F"/>
+              <rect x="108" y="148" width="8" height="32" fill="#132A1A"/>
+              <rect x="183" y="143" width="9" height="37" fill="#132A1A"/>
+              <rect x="244" y="150" width="8" height="30" fill="#132A1A"/>
+              <rect x="488" y="142" width="9" height="38" fill="#132A1A"/>
+              <rect x="543" y="146" width="8" height="34" fill="#132A1A"/>
+              <rect x="0" y="148" width="700" height="32" fill="#071910" opacity="0.55"/>
+              <text x="350" y="127" font-family="Sora,sans-serif" font-size="13" font-weight="700" fill="rgba(250,204,21,0.8)" text-anchor="middle" letter-spacing="2">AMAZONIA — TERRA DOS TUPI</text>
+              <text x="350" y="148" font-family="Sora,sans-serif" font-size="11" fill="rgba(255,255,255,0.4)" text-anchor="middle">Explore a riqueza da floresta e seus povos</text>
+            </svg>
+            <button onclick="showToast('Abrindo galeria...')" style="position:absolute;bottom:14px;right:14px;background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.25);border-radius:99px;padding:6px 14px;font-size:11px;font-weight:700;color:rgba(255,255,255,0.85);cursor:pointer;">Ver galeria</button>
+          </div>
+        </div>
+
+        <!-- Atividade Recente (agora embaixo) -->
+        <div class="sec">Atividade Recente</div>
+        <div class="card">
+          <div class="ar">
+            <div class="aic" style="background:#FEF3C7;">🌿</div>
+            <div><div style="font-size:13px;font-weight:700;color:#3B1A06;">Plantas — Licao 3</div><div style="font-size:11px;color:#9A7B5A;">ha 2 horas</div></div>
+            <div class="xch">+50 XP</div>
+          </div>
+          <div class="ar">
+            <div class="aic" style="background:#FEE2E2;">🐸</div>
+            <div><div style="font-size:13px;font-weight:700;color:#3B1A06;">Animais — Licao 1</div><div style="font-size:11px;color:#9A7B5A;">ontem</div></div>
+            <div class="xch">+80 XP</div>
+          </div>
+          <div class="ar">
+            <div class="aic" style="background:#D1FAE5;">🌊</div>
+            <div><div style="font-size:13px;font-weight:700;color:#3B1A06;">Quiz — Elementos</div><div style="font-size:11px;color:#9A7B5A;">anteontem</div></div>
+            <div class="xch">+120 XP</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- FLASHCARD -->
+    <div class="scr" id="scr-flash">
+      <div class="topbar">
+        <div class="tb-title">Flashcards</div>
+        <div id="fcc" style="background:#FEF3C7;border-radius:99px;padding:5px 13px;font-size:13px;font-weight:800;color:#B45309;"></div>
+      </div>
+      <div class="pad" style="overflow-y:auto;">
+        <div class="cpills">
+          <button class="cp on">Mamiferos</button>
+          <button class="cp off">Aves</button>
+          <button class="cp off">Plantas</button>
+          <button class="cp off">Rios</button>
+          <button class="cp off">Frutas</button>
+        </div>
+        <div class="pb"><div class="pbf" id="fcprog"></div></div>
+        <div class="g2" style="align-items:start;">
+          <div>
+            <div class="flip-wrap" id="fccard" onclick="doFlip()">
+              <div class="flip-inner">
+                <div class="ff ffront">
+                  <div style="font-size:10px;font-weight:700;color:#D97706;letter-spacing:.08em;margin-bottom:12px;">TOQUE PARA REVELAR</div>
+                  <div id="fc-em" style="font-size:64px;margin-bottom:6px;"></div>
+                  <div class="fw" id="fc-wd"></div>
+                  <div style="font-size:11px;color:#9A7B5A;margin-top:5px;font-weight:600;letter-spacing:.06em;">Tupi-Guarani</div>
+                </div>
+                <div class="ff fback">
+                  <div id="fc-bem" style="font-size:56px;margin-bottom:7px;"></div>
+                  <div id="fc-tr" style="font-family:'Sora',sans-serif;font-size:36px;font-weight:900;color:#fff;letter-spacing:-0.02em;"></div>
+                  <div id="fc-ft" style="font-size:12px;color:rgba(255,255,255,0.6);margin-top:7px;text-align:center;line-height:1.6;"></div>
+                  <div id="fc-pl" style="display:flex;gap:7px;margin-top:12px;"></div>
+                </div>
+              </div>
+            </div>
+            <div class="fcnav">
+              <button class="fcb" onclick="prevCard()"><svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg></button>
+              <button onclick="showToast('Reproduzindo...')" style="width:46px;height:46px;background:#D97706;border-radius:50%;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round"><path d="M11 5 6 9H2v6h4l5 4V5z"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
+              </button>
+              <button class="fcb" onclick="nextCard()"><svg viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg></button>
+            </div>
+            <div class="fcacts">
+              <button class="fcw" onclick="fcAct('w')"><svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>Errei</button>
+              <button class="fcr" onclick="fcAct('r')"><svg viewBox="0 0 24 24"><polyline points="20,6 9,17 4,12"/></svg>Acertei!</button>
+            </div>
+          </div>
+          <div>
+            <div class="sec">Lista de Palavras</div>
+            <div class="card" style="padding:8px;"><div id="fclist"></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- QUIZ -->
+    <div class="scr" id="scr-quiz">
+      <div class="topbar">
+        <div class="tb-title">Quiz Interativo</div>
+        <div style="display:flex;gap:8px;align-items:center;">
+          <div id="qtd" style="background:#FEF3C7;border-radius:99px;padding:5px 13px;font-size:13px;font-weight:800;color:#B45309;">15s</div>
+          <div id="qpts" style="background:#D1FAE5;border-radius:99px;padding:5px 13px;font-size:13px;font-weight:800;color:#065F46;">0 pts</div>
+        </div>
+      </div>
+      <div class="pad" id="qarea" style="overflow-y:auto;"></div>
+    </div>
+
+    <!-- PROGRESSO / RANKING -->
+    <div class="scr" id="scr-rank">
+      <div class="topbar">
+        <div class="tb-title">Progresso</div>
+        <div class="streak"><span>7 dias</span></div>
+      </div>
+      <div class="pad" style="overflow-y:auto;">
+        <div class="rkhdr">
+          <div style="width:56px;height:56px;min-width:56px;background:rgba(250,204,21,0.13);border-radius:12px;display:flex;align-items:center;justify-content:center;">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#FACC15" stroke-width="2" stroke-linecap="round"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6M18 9h1.5a2.5 2.5 0 0 0 0-5H18M4 22h16M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22M18 2H6v7a6 6 0 0 0 12 0V2z"/></svg>
+          </div>
+          <div>
+            <div style="font-size:10px;color:rgba(255,255,255,0.38);font-weight:700;letter-spacing:.1em;margin-bottom:4px;">TOTAL DE EXPERIENCIA</div>
+            <div class="rkxp">1.500 <span style="font-size:18px;">XP</span></div>
+            <div style="background:rgba(255,255,255,0.09);border-radius:99px;height:4px;width:170px;margin-top:7px;overflow:hidden;"><div style="height:100%;width:75%;background:#D97706;border-radius:99px;"></div></div>
+            <div style="font-size:11px;color:rgba(255,255,255,0.3);margin-top:4px;">375 XP para Nivel 11</div>
+          </div>
+        </div>
+        <div class="g2" style="gap:16px;align-items:start;">
+          <div>
+            <div class="sec">Ranking Semanal</div>
+            <div class="rk-card">
+              <div class="rkrow me">
+                <div class="rknm" style="background:#D97706;color:#3B1A06;">1</div>
+                <div class="rkav" style="background:#D97706;border-color:#FACC15;">👩</div>
+                <div style="flex:1;min-width:0;"><div class="rknme">Anahi <span style="font-size:10px;background:#FEF3C7;border-radius:99px;padding:1px 6px;color:#B45309;">voce</span></div><div class="rkbb"><div class="rkbf" style="width:100%;"></div></div></div>
+                <div style="text-align:right;"><div style="font-family:'Sora',sans-serif;font-size:13px;font-weight:800;color:#D97706;">1.500</div><div style="font-size:10px;color:#9A7B5A;">XP</div></div>
+              </div>
+              <div class="rkrow">
+                <div class="rknm" style="background:#E5E7EB;color:#6B7280;">2</div>
+                <div class="rkav" style="background:#6B7280;border-color:#E5E7EB;">👨</div>
+                <div style="flex:1;min-width:0;"><div class="rknme">Aruan</div><div class="rkbb"><div class="rkbf" style="width:80%;"></div></div></div>
+                <div style="text-align:right;"><div style="font-family:'Sora',sans-serif;font-size:13px;font-weight:800;color:#D97706;">1.200</div><div style="font-size:10px;color:#9A7B5A;">XP</div></div>
+              </div>
+              <div class="rkrow">
+                <div class="rknm" style="background:#FDE68A;color:#78350F;">3</div>
+                <div class="rkav" style="background:#D97706;border-color:#FDE68A;">👩</div>
+                <div style="flex:1;min-width:0;"><div class="rknme">Irai</div><div class="rkbb"><div class="rkbf" style="width:63%;"></div></div></div>
+                <div style="text-align:right;"><div style="font-family:'Sora',sans-serif;font-size:13px;font-weight:800;color:#D97706;">950</div><div style="font-size:10px;color:#9A7B5A;">XP</div></div>
+              </div>
+              <div class="rkrow">
+                <div class="rknm" style="background:#F5EBE0;color:#9A7B5A;">4</div>
+                <div class="rkav" style="background:#059669;border-color:#A7F3D0;">👦</div>
+                <div style="flex:1;min-width:0;"><div class="rknme">Tupa</div><div class="rkbb"><div class="rkbf" style="width:48%;"></div></div></div>
+                <div style="text-align:right;"><div style="font-family:'Sora',sans-serif;font-size:13px;font-weight:800;color:#D97706;">720</div><div style="font-size:10px;color:#9A7B5A;">XP</div></div>
+              </div>
+            </div>
+          </div>
+          <div>
+            <div class="sec">Conquistas</div>
+            <div class="achbox">
+              <div class="achb"><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></div>
+              <div class="acht">Nivel 10</div>
+              <div class="achs">Voce atingiu um novo nivel!</div>
+              <div style="display:flex;gap:7px;justify-content:center;margin-top:11px;">
+                <button onclick="showToast('Link copiado!')" style="background:#fff;border:1px solid #FDE68A;border-radius:9px;padding:6px 13px;font-size:12px;font-weight:700;color:#5B3716;cursor:pointer;">Compartilhar</button>
+                <button onclick="showToast('Abrindo conquistas...')" style="background:#3B1A06;border:none;border-radius:9px;padding:6px 13px;font-size:12px;font-weight:700;color:#FACC15;cursor:pointer;">Ver todas</button>
+              </div>
+            </div>
+            <div class="sec">Estatisticas</div>
+            <div class="g3">
+              <div style="background:#fff;border-radius:11px;padding:12px;text-align:center;"><div class="stn">142</div><div class="stl">Palavras</div></div>
+              <div style="background:#fff;border-radius:11px;padding:12px;text-align:center;"><div class="stn" style="color:#D97706;">21</div><div class="stl">Licoes</div></div>
+              <div style="background:#fff;border-radius:11px;padding:12px;text-align:center;"><div class="stn" style="color:#166534;">7</div><div class="stl">Sequencia</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+  <div class="tst" id="tst"></div>
+</div>
+
+<script>
+var CUR = 'home', fcIdx = 2, fcTotal = 12, fcFlip = false;
+var qIdx = 0, qScore = 0, qDone = false, qTmr = null, qLeft = 15;
+
+var CARDS = [
+  {w:'PINDO', em:'🌴', tr:'PALMEIRA', ft:'A palmeira sagrada dos Tupi.', pl:['Cerrado','Amazonia']},
+  {w:'PIRA',  em:'🐟', tr:'PEIXE',    ft:'Os rios eram fonte de vida.', pl:['Rios','Lagos']},
+  {w:"A'YANG",em:'🐆', tr:'ONCA',     ft:'O maior felino das Americas.', pl:['Amazonia','Pantanal']},
+  {w:'UIARA', em:'🧜', tr:'SEREIA',   ft:'Espirito das aguas.', pl:['Lendas','Rios']},
+  {w:'ACAJU', em:'🍊', tr:'CAJU',     ft:'Fruta nativa apreciada.', pl:['Nordeste','Cerrado']},
+];
+
+var QUIZ = [
+  {q:"O que significa 'PIRA' em Tupi?", opts:['Peixe','Passaro','Pedra','Fogo'], ans:0, hint:'Pense nos rios da Amazonia', exp:'PIRA = peixe. Os rios eram fundamentais para os povos indigenas.'},
+  {q:"Como se diz ONCA em Tupi-Guarani?", opts:['PINDO',"A'YANG",'KOWA','UIARA'], ans:1, hint:'Animal com manchas', exp:"A'YANG e a onca-pintada, o maior felino das Americas."},
+  {q:"'KOWA' em Tupi significa...", opts:['Rio','Casa','Ceu','Terra'], ans:1, hint:'E onde voce mora', exp:'KOWA = casa, moradia. Usada para descrever as ocas tradicionais.'},
+  {q:"Qual o significado de 'PINDO'?", opts:['Palmeira','Cascata','Pedra','Nuvem'], ans:0, hint:'Uma arvore muito alta', exp:'PINDO = palmeira sagrada dos Tupi-Guarani.'},
+  {q:"'UIARA' na mitologia Tupi e...", opts:['Guerreiro','Sereia das aguas','Espirito do fogo','Deus do trovao'], ans:1, hint:'Vive nas profundezas', exp:'Uiara = sereia que encanta pescadores nos rios.'},
+  {q:"'ACAJU' e o nome Tupi de qual fruta?", opts:['Manga','Abacaxi','Caju','Goiaba'], ans:2, hint:'Tem castanha famosa', exp:'ACAJU originou o nome caju, fruta nativa muito apreciada.'},
+  {q:"Qual povo fala Tupi-Guarani?", opts:['Inca','Guarani e Tupi','Asteca','Maya'], ans:1, hint:'Povos do Brasil e America do Sul', exp:'Tupi-Guarani e falado pelos povos Tupi e Guarani no Brasil, Paraguai e Argentina.'},
+  {q:"PIRANHA vem de PIRA (peixe) + RANHA que significa...?", opts:['Dente','Sangue','Rapido','Bravo'], ans:0, hint:'Pense nos dentes afiados', exp:'PIRANHA = PIRA (peixe) + RANHA (dente). Legado do Tupi no portugues.'},
+];
+
+function goTo(s) {
+  document.getElementById('scr-' + CUR).classList.remove('act');
+  document.getElementById('scr-' + s).classList.add('act');
+  ['home','flash','quiz','rank'].forEach(function(x) {
+    var el = document.getElementById('nb-' + x);
+    if (el) el.classList.remove('act');
+  });
+  var nb = document.getElementById('nb-' + s);
+  if (nb) nb.classList.add('act');
+  CUR = s;
+  if (s === 'quiz') startQuiz();
+  if (s === 'flash') { updateFc(); renderFcList(); }
+  document.getElementById('main').scrollTop = 0;
+}
+
+function showToast(msg) {
+  var el = document.getElementById('tst');
+  el.textContent = msg;
+  el.classList.add('vis');
+  setTimeout(function() { el.classList.remove('vis'); }, 2200);
+}
+
+function updateFc() {
+  fcFlip = false;
+  document.getElementById('fccard').classList.remove('flipped');
+  var pct = Math.round(((fcIdx + 1) / fcTotal) * 100);
+  document.getElementById('fcprog').style.width = pct + '%';
+  document.getElementById('fcc').textContent = (fcIdx + 1) + ' / ' + fcTotal;
+  var c = CARDS[fcIdx % CARDS.length];
+  document.getElementById('fc-em').textContent = c.em;
+  document.getElementById('fc-wd').textContent = c.w;
+  document.getElementById('fc-bem').textContent = c.em;
+  document.getElementById('fc-tr').textContent = c.tr;
+  document.getElementById('fc-ft').textContent = c.ft;
+  document.getElementById('fc-pl').innerHTML = c.pl.map(function(p) {
+    return '<div style="background:rgba(255,255,255,0.11);border-radius:7px;padding:3px 9px;font-size:11px;font-weight:700;color:rgba(255,255,255,0.75);">' + p + '</div>';
+  }).join('');
+}
+
+function renderFcList() {
+  document.getElementById('fclist').innerHTML = CARDS.map(function(c, i) {
+    var bg = (i === fcIdx % CARDS.length) ? '#FFF7ED' : 'transparent';
+    return '<div onclick="fcJump(' + i + ')" style="display:flex;align-items:center;gap:9px;padding:7px 8px;border-radius:8px;cursor:pointer;background:' + bg + ';">'
+      + '<span style="font-size:16px;">' + c.em + '</span>'
+      + '<span style="font-size:13px;font-weight:700;color:#3B1A06;">' + c.w + '</span>'
+      + '<span style="font-size:12px;color:#9A7B5A;margin-left:auto;">' + c.tr + '</span>'
+      + '</div>';
+  }).join('');
+}
+
+function doFlip() { fcFlip = !fcFlip; document.getElementById('fccard').classList.toggle('flipped', fcFlip); }
+function nextCard() { fcIdx = Math.min(fcIdx + 1, fcTotal - 1); updateFc(); renderFcList(); }
+function prevCard() { fcIdx = Math.max(fcIdx - 1, 0); updateFc(); renderFcList(); }
+function fcJump(i) { fcIdx = i; updateFc(); renderFcList(); }
+function fcAct(t) {
+  if (t === 'r') { showToast('Muito bem! +10 XP'); nextCard(); }
+  else showToast('Vamos praticar mais!');
+}
+
+function startQuiz() {
+  clearInterval(qTmr);
+  qIdx = 0; qScore = 0; qDone = false;
+  renderQ();
+}
+
+function renderQ() {
+  if (qIdx >= QUIZ.length) { renderResult(); return; }
+  clearInterval(qTmr);
+  qLeft = 15; qDone = false;
+  document.getElementById('qpts').textContent = qScore + ' pts';
+  document.getElementById('qtd').textContent = qLeft + 's';
+  var q = QUIZ[qIdx];
+  var L = ['A','B','C','D'];
+  var dots = QUIZ.map(function(_, i) {
+    var cls = i < qIdx ? 'done' : i === qIdx ? 'cur' : '';
+    return '<div class="qdot ' + cls + '" id="qd' + i + '"></div>';
+  }).join('');
+  var opts = q.opts.map(function(o, i) {
+    return '<button class="qo" id="qo' + i + '" onclick="ansQ(' + i + ')">'
+      + '<div class="olet">' + L[i] + '</div><span>' + o + '</span></button>';
+  }).join('');
+  document.getElementById('qarea').innerHTML =
+    '<div class="qhdr">'
+    + '<div><div class="qqn">PERGUNTA ' + (qIdx+1) + ' DE ' + QUIZ.length + '</div>'
+    + '<div class="qq">' + q.q + '</div>'
+    + '<div class="qh">' + q.hint + '</div></div>'
+    + '<div class="qring"><span class="qrv" id="qtv">' + qLeft + '</span></div>'
+    + '</div>'
+    + '<div class="qdots">' + dots + '</div>'
+    + '<div class="qopts">' + opts + '</div>'
+    + '<div class="qfb" id="qfb"><div style="font-size:20px;" id="fbic"></div>'
+    + '<div><div class="qfbtit" id="fbtit"></div><div class="qfbdsc" id="fbdsc"></div></div></div>'
+    + '<button class="qnxt" id="qnxt" onclick="nextQ()">'
+    + (qIdx + 1 < QUIZ.length ? 'Proxima Pergunta' : 'Ver Resultado') + '</button>';
+
+  qTmr = setInterval(function() {
+    qLeft--;
+    var tv = document.getElementById('qtv');
+    var td = document.getElementById('qtd');
+    if (tv) tv.textContent = qLeft;
+    if (td) td.textContent = qLeft + 's';
+    var ring = document.querySelector('.qring');
+    if (ring) ring.style.borderColor = qLeft <= 5 ? '#EF4444' : qLeft <= 10 ? '#F59E0B' : '#FACC15';
+    if (qLeft <= 0) { clearInterval(qTmr); if (!qDone) timeOut(); }
+  }, 1000);
+}
+
+function timeOut() {
+  qDone = true;
+  var q = QUIZ[qIdx];
+  for (var i = 0; i < 4; i++) { var el = document.getElementById('qo' + i); if (el) el.classList.add('dis'); }
+  var cor = document.getElementById('qo' + q.ans);
+  if (cor) cor.classList.add('cor');
+  showFb(false, 'Tempo esgotado!', 'Resposta certa: ' + q.opts[q.ans] + '. ' + q.exp);
+  var nb = document.getElementById('qnxt'); if (nb) nb.classList.add('vis');
+}
+
+function ansQ(i) {
+  if (qDone) return;
+  clearInterval(qTmr);
+  qDone = true;
+  var q = QUIZ[qIdx];
+  var ok = (i === q.ans);
+  if (ok) { qScore += Math.max(10, qLeft * 10); showToast('Correto! +' + Math.max(10, qLeft * 10) + ' pts'); }
+  else showToast('Quase la! Continue.');
+  document.getElementById('qpts').textContent = qScore + ' pts';
+  for (var j = 0; j < 4; j++) { var el = document.getElementById('qo' + j); if (el) el.classList.add('dis'); }
+  document.getElementById('qo' + i).classList.add(ok ? 'cor' : 'wr');
+  if (!ok) document.getElementById('qo' + q.ans).classList.add('cor');
+  showFb(ok, ok ? 'Correto!' : 'Incorreto', q.exp);
+  var nb = document.getElementById('qnxt'); if (nb) nb.classList.add('vis');
+}
+
+function showFb(ok, t, d) {
+  var fb = document.getElementById('qfb'); if (!fb) return;
+  fb.classList.add('vis', ok ? 'ok' : 'bad');
+  document.getElementById('fbic').textContent = ok ? '✅' : '❌';
+  document.getElementById('fbtit').textContent = t;
+  document.getElementById('fbdsc').textContent = d;
+}
+
+function nextQ() { qIdx++; renderQ(); }
+
+function renderResult() {
+  clearInterval(qTmr);
+  var pct = Math.round((qScore / (QUIZ.length * 150)) * 100);
+  var medal = pct >= 80 ? '🏆' : pct >= 50 ? '🥈' : '🎯';
+  var msg = pct >= 80 ? 'Incrivel! Voce domina o Tupi!' : pct >= 50 ? 'Muito bom! Continue!' : 'Continue estudando!';
+  document.getElementById('qarea').innerHTML =
+    '<div class="card" style="text-align:center;padding:28px 20px;">'
+    + '<div style="font-size:56px;margin-bottom:10px;">' + medal + '</div>'
+    + '<div style="font-family:Sora,sans-serif;font-size:22px;font-weight:900;color:#3B1A06;">' + msg + '</div>'
+    + '<div style="font-family:Sora,sans-serif;font-size:48px;font-weight:900;color:#D97706;margin:14px 0 5px;">' + qScore + ' pts</div>'
+    + '<div style="font-size:12px;color:#9A7B5A;">' + QUIZ.length + ' perguntas  •  ' + pct + '% de acertos</div>'
+    + '<div class="g3" style="margin:18px 0;">'
+    + '<div style="background:#F5EBE0;border-radius:11px;padding:11px;"><div style="font-family:Sora,sans-serif;font-size:20px;font-weight:900;color:#3B1A06;">' + qScore + '</div><div style="font-size:11px;color:#9A7B5A;margin-top:2px;">Pontos</div></div>'
+    + '<div style="background:#D1FAE5;border-radius:11px;padding:11px;"><div style="font-family:Sora,sans-serif;font-size:20px;font-weight:900;color:#065F46;">' + pct + '%</div><div style="font-size:11px;color:#9A7B5A;margin-top:2px;">Acertos</div></div>'
+    + '<div style="background:#FEF3C7;border-radius:11px;padding:11px;"><div style="font-family:Sora,sans-serif;font-size:20px;font-weight:900;color:#B45309;">+' + qScore + '</div><div style="font-size:11px;color:#9A7B5A;margin-top:2px;">XP Ganhos</div></div>'
+    + '</div>'
+    + '<div style="display:flex;gap:9px;justify-content:center;">'
+    + '<button onclick="startQuiz()" style="background:#3B1A06;border:none;border-radius:11px;padding:12px 24px;font-family:Sora,sans-serif;font-size:13px;font-weight:800;color:#FACC15;cursor:pointer;">Tentar Novamente</button>'
+    + '<button onclick="goTo(\'home\')" style="background:#fff;border:2px solid #FDE68A;border-radius:11px;padding:12px 20px;font-family:Sora,sans-serif;font-size:13px;font-weight:800;color:#3B1A06;cursor:pointer;">Ir ao Inicio</button>'
+    + '</div></div>';
+  document.getElementById('qpts').textContent = qScore + ' pts';
+}
+
+// Bind navegação
+document.querySelectorAll('[data-screen]').forEach(function(el) {
+  el.addEventListener('click', function() { goTo(el.getAttribute('data-screen')); });
+});
+document.querySelectorAll('[data-toast]').forEach(function(el) {
+  el.addEventListener('click', function() { showToast(el.getAttribute('data-toast')); });
+});
+
+updateFc();
+renderFcList();
+</script>
+</body>
+</html>
